@@ -1,0 +1,418 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/strel1zia271/Lythria-Obsidian/refs/heads/main/loading"))()
+
+local repo = "https://raw.githubusercontent.com/strel1zia271/Lythria-Obsidian/main/"
+local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
+local ThemeManager = loadstring(game:HttpGet(repo .. "addons/ThemeManager.lua"))()
+local SaveManager = loadstring(game:HttpGet(repo .. "addons/SaveManager.lua"))()
+
+local Options = Library.Options
+local Toggles = Library.Toggles
+
+Library.ForceCheckbox = false
+Library.ShowToggleFrameInKeybinds = true
+
+local Window = Library:CreateWindow({
+	Title = "Lythria",
+	Footer = "version: 1.176",
+	Icon = 116290238711286,
+	NotifySide = "Right",
+	ShowCustomCursor = true,
+    MenuFadeTime = 5
+})
+
+local Tabs = {
+	Aiming = Window:AddTab("Aiming", "crosshair"),
+	Visuals = Window:AddTab("Visuals", "eye"),
+    Miscellaneous = Window:AddTab("Miscellaneous", "ellipsis"),
+    luau = Window:AddTab("luau", "code-xml"),
+    Notes = Window:AddTab("Notes", "scroll"),
+    Credits = Window:AddTab("Credentials", "contact"),
+    Affiliations = Window:AddTab("Affiliations", "users-round"),
+	["UI Settings"] = Window:AddTab("Settings", "settings"),
+}
+
+
+
+
+--====================================================--
+--==                                                ==--
+--==                C O M B A T I C S              ==--
+--==                                                ==--
+--====================================================--
+
+
+
+
+local mainaim = Tabs.Aiming:AddLeftGroupbox("Aimlock", "option")
+
+mainaim:AddToggle("aimenable",{Text="Enable",Default=false,Callback=function(v) aimenable=v end})
+mainaim:AddLabel("Aiming key"):AddKeyPicker("aimkey",{Default="None",SyncToggleState=false,Mode="Toggle",Text="Aimlock",Callback=function(v) enblch=v print(v) end,ChangedCallback=function(n) enbcc = n end})
+mainaim:AddDivider("Divider")
+mainaim:AddToggle("sensenable",{Text="Sensitivity Configure",Default=false,Callback=function(Value) sensenable = Value end})
+mainaim:AddSlider("sensamt",{Text="Sensitivity",Default=50,Min=0,Max=100,Rounding=1,Callback=function(Value) sensamt = Value end})
+mainaim:AddToggle("senslerp",{Text="Automatic Sensitivity",Default=false,Callback=function(Value) senslerp = Value end})
+mainaim:AddDivider("Divider")
+mainaim:AddToggle("predenable",{Text="Prediction Configure",Default=false,Callback=function(Value) predenable = Value end})
+mainaim:AddSlider("predamt",{Text="Prediction",Default=50,Min=0,Max=100,Rounding=1,Callback=function(Value) predamt = Value end})
+mainaim:AddToggle("autopredenable",{Text="Automatic Prediction",Default=false,Callback=function(Value) autopredenable = Value end})
+mainaim:AddDropdown("predmethod",{Values={"Linear","Ping Compensation","Distance","XYZ"},Default=1,Text="Auto Prediction Method",Callback=function(Value) predmethod = Value end})
+
+
+local mainsilentaim = Tabs.Aiming:AddRightGroupbox("Silent aim", "option")
+
+mainsilentaim:AddToggle("silentenable",{Text="Enable",Default=false,Callback=function(Value) silentenable = Value end})
+mainsilentaim:AddToggle("manipulationenable",{Text="Manipulation",Default=false,Callback=function(Value) manipulationenable = Value end})
+mainsilentaim:AddLabel("Silent keybind"):AddKeyPicker("silentkey",{Default="None",Mode="Toggle",Text="Silent aim",Callback=function(Value) silentkey = Value end,ChangedCallback=function(New) silentkey = New end})
+mainsilentaim:AddDivider("Divider")
+mainsilentaim:AddToggle("silentfindfunc",{Text="Check For Fire Function",Default=false,Callback=function(Value) silentfindfunc = Value end})
+mainsilentaim:AddDropdown("SilentMethod",{Values={"Raycast","FindPartOnRayWithWhitelist","FindPartOnRayWithIgnorelist","FindPartOnRay","ScreenPointToRay","ViewportPointToRay"},Default=1,Text="Silent aim method",Callback=function(Value) SilentMethod = Value end})
+mainsilentaim:AddDropdown("Block Methods",{Values={"PivotTo","TranslateBy","SetPrimaryPartCFrame","BulkMoveTo"},Default=1,Text="Silent aim method",Callback=function(Value) BlockMethods = Value end})
+mainsilentaim:AddDivider("Divider")
+mainsilentaim:AddSlider("MultiplyRayUnitBy",{Text="Multiply Ray Unit By",Default=5000,Min=0,Max=10000,Callback=function(Value) MultiplyRayUnitBy = Value end})
+mainsilentaim:AddSlider("curvx",{Text="Curving X",Default=0,Min=-2,Max=2,Callback=function(Value) curvx = Value end})
+mainsilentaim:AddSlider("curvy",{Text="Curving Y",Default=0,Min=-2,Max=2,Callback=function(Value) curvy = Value end})
+mainsilentaim:AddSlider("Scale",{Text="Scale",Default=0,Min=0,Max=2,Callback=function(Value) Scale = Value end})
+
+
+local filters = Tabs.Aiming:AddLeftGroupbox("Filterments", "gallery-vertical-end")
+
+filters:AddToggle("visible",{Text="Visible Check",Default=false,Callback=function(Value) visible = Value end})
+filters:AddToggle("health",{Text="Health Check",Default=false,Callback=function(Value) health = Value end})
+filters:AddToggle("friend",{Text="Friend Check",Default=false,Callback=function(Value) friend = Value end})
+filters:AddToggle("transparency",{Text="Transparency Check",Default=false,Callback=function(Value) transparency = Value end})
+filters:AddToggle("anchor",{Text="Anchor Check",Default=false,Callback=function(Value) anchor = Value end})
+filters:AddToggle("priority",{Text="Priority Check",Default=false,Callback=function(Value) priority = Value end})
+filters:AddToggle("player",{Text="Player Check",Default=false,Callback=function(Value) player = Value end})
+filters:AddToggle("forcefield",{Text="ForceField Check",Default=false,Callback=function(Value) forcefield = Value end})
+filters:AddToggle("team",{Text="Team Check",Default=false,Callback=function(Value) team = Value end})
+filters:AddToggle("ignore",{Text="Ignore Check",Default=false,Callback=function(Value) ignore = Value end})
+
+
+local setaims = Tabs.Aiming:AddRightGroupbox("Settings", "settings")
+
+setaims:AddToggle("distanceenable",{Text="Limit Distance",Default=false,Callback=function(Value) distanceenable = Value end})
+setaims:AddSlider("minimaldistance",{Text="Distance",Default=5000,Min=0,Max=10000,Callback=function(Value) minimaldistance = Value end})
+setaims:AddToggle("triggerhitenable",{Text="Trigger Hit",Default=false,Callback=function(Value) triggerhitenable = Value end})
+setaims:AddSlider("hitdelay",{Text="Delay m/s",Default=5000,Min=0,Max=10000,Callback=function(Value) hitdelay = Value end})
+setaims:AddDropdown("targetbody",{Values={"Head","UpperTorso","HumanoidRootPart","LowerTorso","LeftHand","RightHand","LeftLowerArm","RightLowerArm","LeftUpperArm","RightUpperArm","LeftLowerLeg","LeftUpperLeg","RightLowerLeg","RightUpperLeg"},Default=1,Multi=true,Text="Humanoid Selection",Callback=function(Value) targetbody = Value end})
+setaims:AddDropdown("aimmodeselection",{Values={"Cursor","Camera","Clanned"},Default=1,Text="Mode Selection",Callback=function(Value) aimmodeselection = Value end})
+setaims:AddToggle("origin",{Text="Origin",Default=false,Callback=function(Value) origin = Value end})
+setaims:AddDropdown("originselection",{Values={"Camera","View","nil"},Default=1,Multi=true,Text="Origin Selection",Callback=function(Value) originselection = Value end})
+setaims:AddToggle("ignorelist",{Text="Ignore List",Default=false,Callback=function(Value) ignorelist = Value end})
+setaims:AddDropdown("ignoreselection",{Values={"Character","Camera","nil"},Default=1,Multi=true,Text="Ignore Selection",Callback=function(Value) ignoreselection = Value end})
+setaims:AddToggle("enabledisplayments",{Text="Enable Display",Default=false,Callback=function(Value) enabledisplayments = Value end})
+setaims:AddDropdown("Display",{Values={"Usename","Distance","Health","Inventory"},Default=1,Multi=true,Text="Displayments",Callback=function(Value) Display = Value end})
+
+
+local visualcombat = Tabs.Aiming:AddRightGroupbox("Visuals", "eye")
+
+visualcombat:AddToggle("enablefov",{Text="Draw Field Of View",Default=false,Callback=function(Value) enablefov = Value end})
+visualcombat:AddLabel("Field Of View"):AddColorPicker("fovcolor",{Default=Color3.new(255,255,255),Title="FOV Color",Callback=function(Value) fovcolor = Value end})
+visualcombat:AddToggle("fovfill",{Text="Fill FOV",Default=false,Callback=function(Value) fovfill = Value end})
+visualcombat:AddSlider("fovsides",{Text="Sides FOV",Default=360,Min=0,Max=360,Callback=function(Value) fovsides = Value end})
+visualcombat:AddToggle("rainbowfov",{Text="Rainbow Effect",Default=false,Callback=function(Value) rainbowfov = Value end})
+visualcombat:AddSlider("rotspeed",{Text="Rotation Speed",Default=5,Min=0,Max=50,Callback=function(Value) rotspeed = Value end})
+visualcombat:AddSlider("transdura",{Text="Transitional Duration",Default=5,Min=0,Max=50,Callback=function(Value) transdura = Value end})
+visualcombat:AddToggle("dynamicfov",{Text="Dynamic FOV",Default=false,Callback=function(Value) dynamicfov = Value end})
+visualcombat:AddToggle("fovtrace",{Text="FOV Follow Player",Default=false,Callback=function(Value) fovtrace = Value end})
+visualcombat:AddDropdown("fovplace",{Values={"Camera","Mouse"},Default=1,Multi=false,Text="Field Of View Position",Callback=function(Value) fovplace = Value end})
+visualcombat:AddSlider("fovradius",{Text="Radius",Default=360,Min=0,Max=580,Callback=function(Value) fovradius = Value end})
+visualcombat:AddDropdown("fovstyle",{Values={"Sine","Elastic","quad","quint","quart","Linear","Cubic","Circular","Bounce","Back","Expotential"},Default=1,Multi=false,Text="Style",Callback=function(Value) fovstyle = Value end})
+visualcombat:AddDropdown("fovdirecteffect",{Values={"In","Out","InOut"},Default=1,Multi=false,Text="Effect Direction",Callback=function(Value) fovdirecteffect = Value end})
+
+visualcombat:AddToggle("highlightplayer",{Text="Highlight Targeted",Default=false,Callback=function(Value) highlighttargeted = Value end})
+visualcombat:AddSlider("highlighttrans",{Text="Highlight Transparency",Default=0.5,Min=0,Max=1,Callback=function(Value) highlighttrans = Value end})
+
+
+
+
+--====================================================--
+--==                                                ==--
+--==                   V I S U A L S               ==--
+--==                                                ==--
+--====================================================--
+
+
+
+
+local mainvis = Tabs.Visuals:AddLeftGroupbox("Main", "option")
+
+mainvis:AddToggle("visenable",{Text="Enable",Default=false,Callback=function(v) visenable=v end})
+mainvis:AddToggle("boundbox",{Text="Bounding Box",Default=false,Callback=function(v) boundbox=v end}):AddColorPicker("boxcolor",{Default=Color3.new(255,255,255),Title="Bounding Color",Callback=function(Value) boxcolor = Value end})
+mainvis:AddToggle("healthbar",{Text="Health Bar",Default=false,Callback=function(v) healthbar=v end}):AddColorPicker("healthbarcolor",{Default=Color3.new(0,255,0),Title="Healthbar Color",Callback=function(Value) healthbarcolor = Value end})
+mainvis:AddToggle("healthtext",{Text="Health Text",Default=false,Callback=function(v) healthtext=v end}):AddColorPicker("Healthtextcolor",{Default=Color3.new(255,0,0),Title="HealthText Color",Callback=function(Value) Healthtextcolor = Value end})
+mainvis:AddToggle("username",{Text="Username Text",Default=false,Callback=function(v) username=v end}):AddColorPicker("usernamecolor",{Default=Color3.new(255,255,255),Title="Username Color",Callback=function(Value) usernamecolor = Value end})
+mainvis:AddToggle("Distance",{Text="Distance Text",Default=false,Callback=function(v) distance=v end}):AddColorPicker("distancecolor",{Default=Color3.new(255,255,255),Title="Distance Color",Callback=function(Value) distancecolor = Value end})
+mainvis:AddToggle("weapon",{Text="Weapon Image",Default=false,Callback=function(v) weapon=v end})
+mainvis:AddToggle("weapontext",{Text="Weapon Text",Default=false,Callback=function(v) weapontext=v end}):AddColorPicker("weapontextcolor",{Default=Color3.new(255,255,255),Title="WeaponText Color",Callback=function(Value) weapontextcolor = Value end})
+mainvis:AddDivider()
+mainvis:AddToggle("relcolors",{Text="Relation Colors",Default=false,Callback=function(v) relcolors=v end})
+mainvis:AddLabel("Friendly"):AddColorPicker("friendcolor",{Default=Color3.new(0,255,0),Title="Friendly Color",Callback=function(Value) friendcolor = Value end})
+mainvis:AddLabel("Enemies"):AddColorPicker("enemycolor",{Default=Color3.new(255,0,0),Title="Enemies Color",Callback=function(Value) enemycolor = Value end})
+
+local arrowvis = Tabs.Visuals:AddRightGroupbox("Arrows OffScreen", "eye")
+
+arrowvis:AddToggle("offscreenenable",{Textn="Eable",Default=false,Callback=function(v) offscreenenable=v end}):AddColorPicker("offscreencolor",{Default=Color3.new(255,255,255),Title="OffScreen Color",Callback=function(Value) offscreencolor = Value end})
+arrowvis:AddToggle("dynamicOffScreen",{Textn="Dynamic Sizing",Default=false,Callback=function(v) dynamicOffScreen=v end})
+arrowvis:AddSlider("widtharrow",{Text="Width",Default=5,Min=0,Max=50,Callback=function(Value) WidthArrow = Value end})
+arrowvis:AddSlider("heightarrow",{Text="Height",Default=5,Min=0,Max=50,Callback=function(Value) HeightArrow = Value end})
+arrowvis:AddSlider("radiusarrow",{Text="Radius",Default=5,Min=0,Max=50,Callback=function(Value) RadiusArrow = Value end})
+arrowvis:AddDropdown("arrowpoints",{Values={"1","3","5"},Default=1,Multi=false,Text="Arrow Points",Callback=function(Value) arrowpoints = Value end})
+
+local mainsettings = Tabs.Visuals:AddLeftGroupbox("Settings", "option")
+
+mainsettings:AddSlider("boxheight",{Text="Bounding Box Height",Default=5,Min=0,Max=10,Callback=function(Value) boxheight = Value end})
+mainsettings:AddSlider("boxwidth",{Text="Bounding Box Width",Default=2.5,Min=0,Max=10,Callback=function(Value) boxwidth = Value end})
+mainsettings:AddDropdown("boxsize",{Values={"Static","Dynamic","SizeDynamic"},Default=1,Multi=false,Text="Bounding Size",Callback=function(Value) boxsize = Value end})
+mainsettings:AddDropdown("boxstyle",{Values={"Box","Corner"},Default=1,Multi=false,Text="Bounding Style",Callback=function(Value) boxstyle = Value end})
+mainsettings:AddDropdown("usernamepos",{Values={"Top","Bottom"},Default=1,Multi=false,Text="Username Position",Callback=function(Value) usernamepos = Value end})
+mainsettings:AddDropdown("distancepos",{Values={"Top","Bottom"},Default=2,Multi=false,Text="Distance Position",Callback=function(Value) distancepos = Value end})
+mainsettings:AddDropdown("weaponpos",{Values={"Top","Bottom"},Default=2,Multi=false,Text="Weapon Position",Callback=function(Value) weaponpos = Value end})
+mainsettings:AddDropdown("healthpos",{Values={"Top","Bottom","Left","Right"},Default=1,Multi=false,Text="Health Position",Callback=function(Value) healthpos = Value end})
+mainsettings:AddDropdown("invpos",{Values={"Top","Bottom"},Default=2,Multi=false,Text="Inventory Position",Callback=function(Value) invpos = Value end})
+
+local chamvis = Tabs.Visuals:AddRightGroupbox("Chams", "eye")
+
+chamvis:AddToggle("enablevcham",{Text="Enable",Default=false,Callback=function(v) enablevcham=v end})
+chamvis:AddToggle("glowcham",{Text="Glow",Default=false,Callback=function(v) glowcham=v end})
+chamvis:AddLabel("Glow Color"):AddColorPicker("glowingcolor",{Default=Color3.new(255,255,255),Title="Glowing Color",Callback=function(Value) glowingcolor = Value end})
+chamvis:AddToggle("highlightcham",{Text="Hightlight",Default=false,Callback=function(v) highlightcham=v end})
+arrowvis:AddSlider("transparencycham",{Text="Transparency",Default=0.5,Min=0,Max=1,Callback=function(Value) transparencycham = Value end})
+chamvis:AddLabel("Highlight Color"):AddColorPicker("highlightingcolor",{Default=Color3.new(255,255,255),Title="Highlight Color",Callback=function(Value) highlightingcolor = Value end})
+chamvis:AddToggle("visiblecolor",{Text="Visible Color",Default=false,Callback=function(v) visiblecolor=v end})
+chamvis:AddLabel("Visibility Color")
+chamvis:AddLabel("Unvisible Color"):AddColorPicker("unvisiblecolor3",{Default=Color3.new(255,0,0),Title="Invisible Color",Callback=function(Value) unvisiblecolor3 = Value end})
+chamvis:AddLabel("Visible Color"):AddColorPicker("visiblecolor3",{Default=Color3.new(255,255,255),Title="Visible Color",Callback=function(Value) visiblecolor3 = Value end})
+
+local miscellaneousvis = Tabs.Visuals:AddLeftGroupbox("Miscellaneous", "option")
+
+miscellaneousvis:AddToggle("teamcheckvis",{Text="TeamCheck",Default=false,Callback=function(v) teamcheckvis=v end})
+miscellaneousvis:AddToggle("showhealthdamage",{Text="Only Show Health On Damage",Default=false,Callback=function(v) showhealthdamage=v end})
+miscellaneousvis:AddToggle("animationvisual",{Text="Animations",Default=false,Callback=function(v) animationvisual=v end})
+miscellaneousvis:AddToggle("limitdistance",{Text="Limit Distance",Default=false,Callback=function(v) limitdistance=v end})
+miscellaneousvis:AddSlider("renderdist",{Text="Render Distance",Default=1,Min=0,Max=10000,Callback=function(Value) renderdist = Value end})
+miscellaneousvis:AddSlider("fadeouttime",{Text="Fadeout Time",Default=0.5,Min=0,Max=1,Callback=function(Value) fadeouttime = Value end})
+miscellaneousvis:AddSlider("transtimevis",{Text="Transition Time",Default=0.5,Min=0,Max=1,Callback=function(Value) transtimevis = Value end})
+miscellaneousvis:AddDropdown("selectanim",{Values={"Ammo","Health","Death/RespawnFade"},Default=2,Multi=false,Text="Select Animations",Callback=function(Value) selectanim = Value end})
+miscellaneousvis:AddSlider("delayvis",{Text="Delay",Default=500,Min=0,Max=1000,Callback=function(Value) delayvis = Value end})
+
+local worldvis = Tabs.Visuals:AddRightGroupbox("World", "eye")
+
+worldvis:AddDropdown("skychange",{Values={"Default","Purple Sunset","Red Night","Sunset","Blue Night","Deep Space","Pink Skies","Blue Planet","Blue Nebula","Blossom Daylight","Space","Roblox Default","Artic"},Default=2,Multi=false,Text="Skybox",Callback=function(Value) skychange = Value end})
+worldvis:AddToggle("ambientworld",{Text="Ambient",Default=false,Callback=function(v) ambientworld=v end})
+worldvis:AddToggle("clocktime",{Text="World Clock",Default=false,Callback=function(v) clocktime=v end})
+worldvis:AddSlider("clocktimeamt",{Text="Time",Default=12,Min=0,Max=24,Callback=function(Value) clocktimeamt = Value end})
+worldvis:AddDivider()
+worldvis:AddToggle("grassremove",{Text="Remove Grass",Default=false,Callback=function(v) grassremove=v end})
+worldvis:AddToggle("grasscolor",{Text="Grass Color",Default=false,Callback=function(v) grasscolor=v end}):AddColorPicker("grasscolorchange",{Default=Color3.new(106,127,63),Title="Grass Color",Callback=function(Value) grasscolorchange = Value end})
+worldvis:AddToggle("leafycolor",{Text="LeafyGrass Color",Default=false,Callback=function(v) leafycolor=v end}):AddColorPicker("leafygrasscolorchange",{Default=Color3.new(115,132,74),Title="LeafyGrass Color",Callback=function(Value) leafygrasscolorchange = Value end})
+worldvis:AddToggle("groundcolor",{Text="Ground Color",Default=false,Callback=function(v) groundcolor=v end}):AddColorPicker("groundcolorchange",{Default=Color3.new(102,92,59),Title="Ground Color",Callback=function(Value) groundcolorchange = Value end})
+worldvis:AddToggle("rockcolor",{Text="Rock Color",Default=false,Callback=function(v) rockcolor=v end}):AddColorPicker("rockcolorchange",{Default=Color3.new(102,108,111),Title="Rock Color",Callback=function(Value) rockcolorchange = Value end})
+worldvis:AddToggle("sandcolor",{Text="Sand Color",Default=false,Callback=function(v) sandcolor=v end}):AddColorPicker("sandcolorchange",{Default=Color3.new(143,126,95),Title="Sand Color",Callback=function(Value) sandcolorchange = Value end})
+
+
+
+
+--====================================================--
+--==                                                ==--
+--==           M I S C E L L A N E O U S           ==--
+--==                                                ==--
+--====================================================--
+
+
+
+
+local mainmisc = Tabs.Miscellaneous:AddLeftGroupbox("Main", "option")
+
+mainmisc:AddToggle("Walkspeed",{Text="Sprint",Default=false,Callback=function(v) walkspeedhack=v end})
+mainmisc:AddSlider("Walkspeedamt",{Text="Speed",Default=16,Min=0,Max=100,Callback=function(Value) walkspeedhackamt = Value end})
+mainmisc:AddToggle("jumppower",{Text="Jump",Default=false,Callback=function(v) jumppowerhack=v end})
+mainmisc:AddSlider("jumppoweramt",{Text="Power",Default=32,Min=0,Max=100,Callback=function(Value) jumppowerhackamt = Value end})
+mainmisc:AddToggle("crouch",{Text="Crouch", Default=false, Callback=function(v) crouch=v end})
+mainmisc:AddSlider("crouchheight",{Text="Crouch Height", Default=3, Min=1, Max=5, Callback=function(val) crouchHeight=val end})
+mainmisc:AddToggle("chatheighten",{Text="Character Height", Default=false, Callback=function(v) chatheighten=v end})
+mainmisc:AddSlider("charheight",{Text="Height", Default=1, Min=0.5, Max=3, Callback=function(val) charHeight=val end})
+mainmisc:AddToggle("charwidthen",{Text="Character Width", Default=false, Callback=function(v) charwidthen=v end})
+mainmisc:AddSlider("charwidth",{Text="Width", Default=1, Min=0.5, Max=3, Callback=function(val) charWidth=val end})
+mainmisc:AddToggle("stepleapen",{Text="Step leap", Default=false, Callback=function(v) stepleapen=v end})
+mainmisc:AddSlider("stepheight",{Text="Step Height", Default=1, Min=1, Max=10, Callback=function(val) stepHeight=val end})
+mainmisc:AddToggle("noclip",{Text="No Clip", Default=false, Callback=function(v) noclip=v end})
+mainmisc:AddLabel("Noclip"):AddKeyPicker("noclipkey",{Default="None",SyncToggleState=false,Mode="Toggle",Text="Noclip",Callback=function(v) enbnc=v print(v) end,ChangedCallback=function(n) enbnccc = n end})
+mainmisc:AddToggle("fly",{Text="Fly Mode", Default=false, Callback=function(v) fly=v end})
+mainmisc:AddLabel("Fly"):AddKeyPicker("flykey",{Default="None",SyncToggleState=false,Mode="Toggle",Text="Flying",Callback=function(v) enbfl=v print(v) end,ChangedCallback=function(n) enbflcc = n end})
+mainmisc:AddToggle("healthboostenab",{Text="Health Configuration",Default=false,Callback=function(v) healthboosten=v end})
+mainmisc:AddSlider("healthboostamt",{Text="Max Health", Default=100, Min=0.001, Max=500, Callback=function(val) humanoid.MaxHealth=val end})
+
+local aamisc = Tabs.Miscellaneous:AddRightGroupbox("Anti-Aim", "circle-alert")
+
+aamisc:AddToggle("enabledaa",{Text="Enable",Default=false,Callback=function(v) enableantiaim=v end})
+aamisc:AddDropdown("aamethod",{Values={"Underground","Camera","Random","Spin"},Default=1,Multi=false,Text="Anti-Aim Base",Callback=function(Value) aamethod = Value end})
+aamisc:AddDropdown("yawmethod",{Values={"None","Standard","Jitter","Offset Jitter"},Default=1,Multi=false,Text="Yaw Method",Callback=function(Value) yawmethod = Value end})
+aamisc:AddSlider("yawoffset",{Text="Yaw offset", Default=0, Min=180, Max=180, Callback=function(val) yawoffset=val end})
+aamisc:AddSlider("yawoffseotonly",{Text="Offset", Default=0, Min=180, Max=180, Callback=function(val) yawoffseotonly=val end})
+aamisc:AddToggle("forceangleen",{Text="ForceAngle",Default=false,Callback=function(v) forceangleen=v end})
+
+local flmisc = Tabs.Miscellaneous:AddRightGroupbox("Fake Lag", "circle-alert")
+
+flmisc:AddToggle("enablefl",{Text="Enable",Default=false,Callback=function(v) enablefakelag=v end})
+flmisc:AddDropdown("flmethod",{Values={"Standard","Static","Random","freeze"},Default=1,Multi=false,Text="Fake-Lag Method",Callback=function(Value) flmethod = Value end})
+flmisc:AddSlider("fllimit",{Text="Limit", Default=16, Min=0, Max=20, Callback=function(val) fllimit=val end})
+flmisc:AddToggle("visualizefl",{Text="Visualize lag",Default=false,Callback=function(v) visualizefl=v end}):AddColorPicker("visualizercolor",{Default=Color3.new(255,0,0),Title="Visualizer Color",Callback=function(Value) visualizercolor = Value end})
+flmisc:AddToggle("freezeworld",{Text="Freeze World",Default=false,Callback=function(v) freezeworld=v end})
+flmisc:AddLabel("Freeze-World key"):AddKeyPicker("freezeworldkey",{Default="None",SyncToggleState=false,Mode="Toggle",Text="Freeze World",Callback=function(v) enbfw=v print(v) end,ChangedCallback=function(n) enbfwcc = n end})
+flmisc:AddToggle("nosent",{Text="No Send",Default=false,Callback=function(v) nosent=v end})
+flmisc:AddLabel("No-Send key"):AddKeyPicker("nosentkey",{Default="None",SyncToggleState=false,Mode="Toggle",Text="Nosend",Callback=function(v) enbns=v print(v) end,ChangedCallback=function(n) enbnscc = n end})
+
+
+
+
+local luaumain = Tabs.luau:AddLeftGroupbox("Main", "option")
+
+
+local luamisc = Tabs.luau:AddRightGroupbox("Miscellaneous", "option")
+
+
+
+
+local notesmain = Tabs.Notes:AddLeftGroupbox("Main", "option")
+
+
+notesmain:AddInput("importantpastes", {
+	Default = "Paste Importants",
+	Numeric = false,
+	Finished = false,
+	ClearTextOnFocus = false,
+	Text = "Save Pasted",
+	Tooltip = nil,
+	Placeholder = "Text",
+
+	Callback = function(Value)
+	end,
+})
+notesmain:AddInput("importantpastes", {
+	Default = "Paste Importants",
+	Numeric = false,
+	Finished = false,
+	ClearTextOnFocus = false,
+	Text = "Diary",
+	Tooltip = nil,
+	Placeholder = "Text",
+
+	Callback = function(Value)
+	end,
+})
+notesmain:AddInput("importantpastes", {
+	Default = "Paste Importants",
+	Numeric = false,
+	Finished = false,
+	ClearTextOnFocus = false,
+	Text = "Asset ID",
+	Tooltip = nil,
+	Placeholder = "Text",
+
+	Callback = function(Value)
+	end,
+})
+notesmain:AddInput("importantpastes", {
+	Default = "Paste Importants",
+	Numeric = false,
+	Finished = false,
+	ClearTextOnFocus = false,
+	Text = "Choices",
+	Tooltip = nil,
+	Placeholder = "Text",
+
+	Callback = function(Value)
+	end,
+})
+
+
+
+
+local credsmain = Tabs.Credits:AddLeftGroupbox("Developers", "option")
+
+credsmain:AddLabel("Eve/Relizia - Owner & Main Scripter")
+credsmain:AddLabel("jzx100/RichDrip - Head Tester & Main Tester")
+credsmain:AddLabel("Hauchoi/hauchoi323 - Head Administrator")
+
+
+
+
+local affilmain = Tabs.Affiliations:AddLeftGroupbox("Main", "option")
+
+affilmain:AddLabel("discord.gg/Gp3FTan3Yd for main server")
+affilmain:AddLabel("discord.gg/weao for executors that support the script")
+affilmain:AddLabel("what else")
+
+
+
+
+Library:Notify("UNIVERSAL: Enjoy the best script in the market!")
+
+--====================================================--
+--==                                                ==--
+--==                   L I B R A R Y               ==--
+--==                                                ==--
+--====================================================--
+
+-- UI Settings
+local MenuGroup = Tabs["UI Settings"]:AddLeftGroupbox("Menu", "wrench")
+
+MenuGroup:AddToggle("KeybindMenuOpen", {
+	Default = Library.KeybindFrame.Visible,
+	Text = "Open Keybind Menu",
+	Callback = function(value)
+		Library.KeybindFrame.Visible = value
+	end,
+})
+MenuGroup:AddToggle("ShowCustomCursor", {
+	Text = "Custom Cursor",
+	Default = true,
+	Callback = function(Value)
+		Library.ShowCustomCursor = Value
+	end,
+})
+MenuGroup:AddDropdown("NotificationSide", {
+	Values = { "Left", "Right" },
+	Default = "Right",
+
+	Text = "Notification Side",
+
+	Callback = function(Value)
+		Library:SetNotifySide(Value)
+        Library:Notify(Value)
+	end,
+})
+MenuGroup:AddDropdown("DPIDropdown", {
+	Values = { "50%", "75%", "100%", "125%", "150%", "175%", "200%" },
+	Default = "100%",
+
+	Text = "DPI Scale",
+
+	Callback = function(Value)
+		Value = Value:gsub("%%", "")
+		local DPI = tonumber(Value)
+
+		Library:SetDPIScale(DPI)
+	end,
+})
+MenuGroup:AddDivider()
+MenuGroup:AddLabel("Menu bind")
+	:AddKeyPicker("MenuKeybind", { Default = "Insert", NoUI = true, Text = "Menu keybind" })
+
+MenuGroup:AddButton("Unload", function()
+	Library:Unload()
+end)
+
+Library.ToggleKeybind = Options.MenuKeybind
+
+ThemeManager:SetLibrary(Library)
+SaveManager:SetLibrary(Library)
+SaveManager:IgnoreThemeSettings()
+SaveManager:SetIgnoreIndexes({ "MenuKeybind" })
+ThemeManager:SetFolder("Lythria")
+SaveManager:SetFolder("Lythria/Universal")
+SaveManager:SetSubFolder("Roblox")
+SaveManager:BuildConfigSection(Tabs["UI Settings"])
+ThemeManager:ApplyToTab(Tabs["UI Settings"])
+SaveManager:LoadAutoloadConfig()
